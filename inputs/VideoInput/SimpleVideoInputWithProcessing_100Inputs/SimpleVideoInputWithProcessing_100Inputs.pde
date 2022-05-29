@@ -20,35 +20,32 @@ int numVert = 480/boxHeight;
 color[] downPix = new color[numHoriz * numVert];
 
 
-Capture video;
+Capture cam;
 
 OscP5 oscP5;
 NetAddress dest;
 
 void setup() {
- // colorMode(HSB);
-  size(640, 480, P2D);
+  size(640, 480);
 
-  String[] cameras = Capture.list();
+   String[] cameras = Capture.list();
 
   if (cameras == null) {
     println("Failed to retrieve the list of available cameras, will try the default...");
-    video = new Capture(this, 640, 480);
-  } if (cameras.length == 0) {
+    cam = new Capture(this, 640, 480);
+  } else if (cameras.length == 0) {
     println("There are no cameras available for capture.");
     exit();
   } else {
-   /* println("Available cameras:");
-    for (int i = 0; i < cameras.length; i++) {
-      println(cameras[i]);
-    } */
+    println("Available cameras:");
+    printArray(cameras);
 
-   video = new Capture(this, 640, 480);
+   cam = new Capture(this, 640, 480);
     
     // Start capturing the images from the camera
-    video.start();
+    cam.start();
     
-    numPixelsOrig = video.width * video.height;
+    numPixelsOrig = cam.width * cam.height;
     loadPixels();
     noStroke();
   }
@@ -61,10 +58,10 @@ void setup() {
 
 void draw() {
   
-  if (video.available() == true) {
-    video.read();
+  if (cam.available() == true) {
+    cam.read();
     
-    video.loadPixels(); // Make the pixels of video available
+    cam.loadPixels(); // Make the pixels of video available
     /*for (int i = 0; i < numPixels; i++) {
       int x = i % video.width;
       int y = i / video.width;
@@ -84,9 +81,9 @@ void draw() {
         for (int i = 0; i < boxWidth; i++) {
            for (int j = 0; j < boxHeight; j++) {
               int index = (x + i) + (y + j) * 640;
-              red += red(video.pixels[index]);
-              green += green(video.pixels[index]);
-              blue += blue(video.pixels[index]);
+              red += red(cam.pixels[index]);
+              green += green(cam.pixels[index]);
+              blue += blue(cam.pixels[index]);
            } 
         }
        downPix[boxNum] =  color(red/tot, green/tot, blue/tot);
@@ -94,9 +91,9 @@ void draw() {
        fill(downPix[boxNum]);
        
        int index = x + 640*y;
-       red += red(video.pixels[index]);
-       green += green(video.pixels[index]);
-       blue += blue(video.pixels[index]);
+       red += red(cam.pixels[index]);
+       green += green(cam.pixels[index]);
+       blue += blue(cam.pixels[index]);
       // fill (color(red, green, blue));
        rect(x, y, boxWidth, boxHeight);
        boxNum++;
@@ -118,9 +115,9 @@ void draw() {
 float diff(int p, int off) {
   if(p + off < 0 || p + off >= numPixels)
     return 0;
-  return red(video.pixels[p+off]) - red(video.pixels[p]) +
-         green(video.pixels[p+off]) - green(video.pixels[p]) +
-         blue(video.pixels[p+off]) - blue(video.pixels[p]);
+  return red(cam.pixels[p+off]) - red(cam.pixels[p]) +
+         green(cam.pixels[p+off]) - green(cam.pixels[p]) +
+         blue(cam.pixels[p+off]) - blue(cam.pixels[p]);
 }
 
 void sendOsc(int[] px) {
