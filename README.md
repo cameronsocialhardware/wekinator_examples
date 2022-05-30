@@ -1,4 +1,4 @@
-# Wekinator examples
+# 2022 Wekinator examples
 This repository contains example code for Wekinator inputs and outputs, in a variety of programming environments. 
 
 Executable versions of many examples can be found at www.wekinator.org/examples/
